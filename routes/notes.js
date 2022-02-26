@@ -3,14 +3,16 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-note.use(express.json());
+let id = 0;
 
 let notes = JSON.parse(fs.readFileSync(path.join(__dirname, '../db/db.json')));
-
+// api/notes GET
+note.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, "../db/db.json"));
+})
 // api/notes POST
 note.post('/', (req,res) => {
     let { title, text } = req.body;
-    let id = 0;
     id++;
     const newNotes = {
         id,
@@ -26,7 +28,7 @@ note.post('/', (req,res) => {
 //  api/notes DELETE
     note.delete('/:id', (req, res) => {
 
-    let id = req.params.id.toString();
+    let id = req.params.id;
     notes = notes.filter((val) => {
         let data = val.id != id
         return data;
@@ -35,12 +37,6 @@ note.post('/', (req,res) => {
     fs.writeFileSync("./db/db.json", JSON.stringify(notes));
     res.json(notes);
     
-})
-
-// api/notes GET
-
-note.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, "../db/db.json"));
 })
 
 module.exports = note;
