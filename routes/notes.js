@@ -1,32 +1,46 @@
 const note = require('express').Router();
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const rawData = fs.readFileSync(path.join(__dirname, '../db/db.json'))
-const notes = JSON.parse(rawData);
+note.use(express.json());
 
-let idNumber = 0;
+let notes = JSON.parse(fs.readFileSync(path.join(__dirname, '../db/db.json')));
 
-// api/notes
+// api/notes POST
 note.post('/', (req,res) => {
-    const { id, title, text } = req.body;
-        id++;
+    let { title, text } = req.body;
+    let id = 0;
+    id++;
     const newNotes = {
         id,
         title,
         text
     }
 
-    fs.appendFileSync(path.join(__dirname, '../db/db.json'), newNotes, () => {
+    notes.push(newNotes);
 
-    })
+    fs.writeFileSync(path.join(__dirname, '../db/db.json'), JSON.stringify(notes))
+    res.json(notes);
+})
+//  api/notes DELETE
+    note.delete('/:id', (req, res) => {
 
-    res.json();
+    let id = req.params.id.toString();
+    notes = notes.filter((val) => {
+        let data = val.id != id
+        return data;
+    });
+    
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes));
+    res.json(notes);
     
 })
 
+// api/notes GET
+
 note.get('/', (req,res) => {
-    res.json(notes);
+    res.sendFile(path.join(__dirname, "../db/db.json"));
 })
 
 module.exports = note;
