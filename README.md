@@ -16,7 +16,7 @@ This is a simple note taker app that allows you to write a note with a title and
 
 > [Github Repo](https://github.com/mckayjalex/note-taker)
 
-> [Live site]()
+> [Live site](https://secure-hollows-59964.herokuapp.com/)
 
 ## Screenshots 
 
