@@ -1,8 +1,8 @@
 const note = require('express').Router();
 const fs = require('fs');
 const path = require('path');
-
-let id = 1;
+// Gets a unique ID
+const { v4: uuid } = require('uuid');
 
 let notes = JSON.parse(fs.readFileSync(path.join(__dirname, '../db/db.json')));
 // api/notes GET
@@ -11,17 +11,15 @@ note.get('/', (req, res) => {
 })
 // api/notes POST
 note.post('/', (req, res) => {
-    let notes = JSON.parse(fs.readFileSync(path.join(__dirname, '../db/db.json'), 'utf-8'));
     let { title, text } = req.body;
-
     const newNotes = {
-        id,
+        id: uuid(),
         title,
         text
     }
 
     notes.push(newNotes);
-    id = notes[notes.length - 1].id + 1;
+    
     fs.writeFileSync(path.join(__dirname, '../db/db.json'), JSON.stringify(notes))
     res.json(notes);
 })
